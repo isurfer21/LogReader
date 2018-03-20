@@ -1,52 +1,65 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="description" content="LogViewer is web-based log file viewer">
-	<meta name="author" content="Abhishek Kumar (kumarab@hcl.com)">
-	<meta name="copyright" content="Abhishek Kumar (c) 2017">
-	<meta name="license" content="MIT">
-	<title>LogReader</title>
-	<link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
-	<link rel="icon" href="img/favicon.ico" type="image/x-icon">
-	<link rel="stylesheet" href="css/normalize.css">
-	<link rel="stylesheet" href="css/milligram.css">
-	<link rel="stylesheet" href="css/main.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="LogViewer is web-based log file viewer">
+    <meta name="author" content="Abhishek Kumar (kumarab@hcl.com)">
+    <meta name="copyright" content="Abhishek Kumar (c) 2017">
+    <meta name="license" content="MIT">
+    <title>Log Reader</title>
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="img/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/milligram.css">
+    <link rel="stylesheet" href="css/main.css">
 </head>
+
 <body>
-	<div class="container">
-		<img class="ws-page-title-logo" src="img/logo.png">
-		<div class="row">
-			<div class="column">
-				<fieldset id="CheckPassedArguments" class="mdl-card mdl-shadow--2dp">
-					<a class="flipper">&#x27c1;</a>
-					<h4 class="ws-title">File to load</h4>
-					<form class="input">
-						<blockquote class="message hide"></blockquote>
-						<label>Select a file</label> 
-						<input type="file" name="files[]" />
-						<label>Filter line with </label> 
-						<input type="text" name="filterlinewith" value="PremiumAttendant">
-						<label>Output as </label> 
-						<input type="radio" name="outputas" value="raw" checked> Raw 
-						<span class="hspacer"></span>
-						<input type="radio" name="outputas" value="tabulated"> Tabulated
-						<span class="vspacer"></span>
-						<button type="submit">Load</button>
-					</form>
-					<div class="output hide">
-						<blockquote>
-							<b>Status:</b> 
-							<span class="status">n/a</span>
-						</blockquote>
-						<pre><code></code></pre>
-						<div class="tabulate"></div>
-					</div>
-				</fieldset>
-			</div>
-		</div>
-	</div>
-	<script src="js/jquery-3.2.1.js"></script>
-	<script src="js/main.js"></script>
+    <div class="app-ribbon mdl-shadow--2dp">
+        <form id="ctrlPanel">
+            <div class="row">
+                <div class="column">
+                    <img class="app-logo" src="img/logo.png">
+                </div>
+                <div class="column app-ctrl">
+                    <input type="text" name="filterStr" id="filterStr" placeholder="Filter" value="PremiumAttendant">
+                </div>
+                <div class="column app-ctrl">
+                    <input type="radio" name="outputFmt" id="fmtRaw" value="raw" checked> Raw
+                    <span class="hspacer"></span>
+                    <input type="radio" name="outputFmt" id="fmtTable" value="tabulated"> Tabulated
+                </div>
+                <div class="column app-ctrl">
+                    <input type="file" name="fileRef" id="fileRef" />
+                </div>
+                <div class="column app-ctrl">
+                    <input type="reset" value="Reset" />
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="output hide">
+        <pre class="raw"><code></code></pre>
+        <div class="tabulate"></div>
+    </div>
+    <div id="appAbout" class="modal-box hide">
+        <div class="modal-box-content">
+            <span class="modal-btn-close">&times;</span>
+            <div class="row">
+            	<div class="column">
+                    <img class="app-about-logo" src="img/logo.png">
+                </div>
+                <div class="column">
+		            <h3>Log Reader</h3>
+		            <p><i>Version 0.0.1</i></p>
+		        	<p>Copyright (c) 2018 Abhishek Kumar.<br>All rights reserved.</p>
+		        </div>
+        	</div>
+        </div>
+    </div>
+    <script src="js/jquery-3.2.1.js"></script>
+    <script src="js/main.js"></script>
 </body>
+
 </html>

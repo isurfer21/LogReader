@@ -3,126 +3,117 @@
  * @license This work is licensed under a Creative Commons Attribution 4.0 International License.
  */
 
-var nistush = function(e){
-	console.log('main');
+var nistush = function(e) {
+    console.log('main');
 
-	var Card = function () {
-		var cid,
-			containers = {},
-			controls = {},
-			webservice = '',
-			toggle = false;
-		var getFormFieldHashMap = function (form) {
-            var values = {};
-            $.each(form.serializeArray(), function (i, field) {
-                if (field.name.lastIndexOf('[]') < 0) {
-                    values[field.name] = field.value;
-                } else {
-                    var fieldname = field.name.substr(0, field.name.lastIndexOf('[]'));
-                    if (!values.hasOwnProperty(fieldname)) {
-                        values[fieldname] = [];
+    var Card = function() {
+        var containers = {},
+            controls = {};
+        var getTabulatedData = function(data) {
+            var ilines = data.split('\n'),
+                olines = [];
+            for (let i = 0; i < ilines.length; i++) {
+                let cells = ilines[i].split('|').join('</td><td>');
+                olines.push('<td>' + cells + '</td>');
+            }
+            let output = '<table><tr>' + olines.join('</tr><tr>') + '</tr></table>';
+            return output;
+        }
+        var getFilteredData = function(pattern, data) {
+            var output = data;
+            if (!!pattern) {
+                var ilines = data.split('\n'),
+                    olines = [];
+                for (let i = 0; i < ilines.length; i++) {
+                    if (ilines[i].indexOf(pattern) >= 0) {
+                        olines.push(ilines[i]);
                     }
-                    values[fieldname].push(field.value);
                 }
-            });
-            return values;
+                output = olines.join('\n');
+            }
+            return output;
         }
-        var getTabulatedData = function (data) {
-        	var ilines = data.split('\n'), 
-				olines = [];
-			for(let i=0; i<ilines.length; i++) {
-				let cells = ilines[i].split('|').join('</td><td>');
-				olines.push('<td>' + cells + '</td>');
-			}
-			let output = '<table><tr>' + olines.join('</tr><tr>') + '</tr></table>';
-			return output;
+
+        controls.handleFileSelect = function(evt) {
+            console.log('controls.handleFileSelect', evt);
+            let files = evt.target.files;
+            if (files.length > 0) {
+                var fileExtension = /\.(log|txt)$/gi;
+                var fileTobeRead = files[0];
+                if (fileTobeRead.name.match(fileExtension)) {
+                    var fileReader = new FileReader();
+                    fileReader.onload = function(e) {
+                        let filteredData = getFilteredData(containers.filterStr.val(), fileReader.result);
+                        containers.outputResponse.html(filteredData);
+                        let tabulatedData = getTabulatedData(filteredData);
+                        containers.outputTabulate.html(tabulatedData);
+                    }
+                    fileReader.readAsText(fileTobeRead);
+                    containers.output.removeClass('hide');
+                } else {
+                    alert("Please select log file");
+                }
+            }
         }
-        var getFilteredData = function (pattern, data) {
-        	var output = data;
-        	if(!!pattern) {
-				var ilines = data.split('\n'), 
-					olines = [];
-				for(let i=0; i<ilines.length; i++) {
-					if(ilines[i].indexOf(pattern) >= 0) {
-						olines.push(ilines[i]);
-					}
-				}
-				output = olines.join('\n');
-			} 
-			return output;
+        controls.handleOutputFormat = function(e) {
+            console.log('controls.handleOutputFormat', e);
+            let outputFmt = e.target.value;
+            if (outputFmt == "raw") {
+                containers.outputResponse.removeClass('hide');
+                containers.outputTabulate.addClass('hide');
+            } else {
+                containers.outputResponse.addClass('hide');
+                containers.outputTabulate.removeClass('hide');
+            }
         }
-		controls.flipper = function(e) {
-			console.log('Card', cid, 'controls.flipper');
-			if(toggle) {
-				containers.input.removeClass('hide');
-				containers.output.addClass('hide');
-				toggle = false;
-			} else {
-				containers.input.addClass('hide');
-				containers.output.removeClass('hide');
-				toggle = true;
-			}
-		}
-		controls.submit = function(e) {
-			console.log('Card', cid, 'controls.submit');
-			e.preventDefault();
-			containers.inputMessage.html('Please wait ...').removeClass('hide');
-			var values = getFormFieldHashMap(containers.input);
-			$.ajax({
-				url: webservice + values.filename,
-				type: 'GET',
-                dataType: 'text',
-                data: {},
-				success: function(result, textStatus, xOptions) {
-					console.log('Card', cid, 'controls.submit, success:', result, textStatus, xOptions);
-					containers.outputStatus.html('Loading complete!').removeClass('success failure').addClass('success');
-					let filteredData = getFilteredData(values.filterlinewith, result)
-					if (values.outputas == 'raw') {
-						containers.outputResponse.html(filteredData);
-					} else if (values.outputas == 'tabulated') {
-						let tabulatedData = getTabulatedData(filteredData);
-						containers.outputTabulate.html(tabulatedData);
-					}
-					containers.inputMessage.html('').addClass('hide');
-					controls.flipper(e);
-				},
-				error: function(xOptions, textStatus, errorThrown) {
-					console.log('Card', cid, 'controls.submit, failure:', xOptions, textStatus, errorThrown);
-					containers.outputStatus.html(textStatus);
-					containers.outputResponse.html(errorThrown);
-					containers.inputMessage.html('').addClass('hide');
-				}
-			});
-		}
-		this.setWebserviceUrl = function (url) {
-			webservice = url;
-		}
-		this.destroy = function () {
-			console.log('Card', cid, 'destroy');
-			containers.flipper.off('click', controls.flipper);
-		}
-		this.initialize = function(id) {
-			cid = id;
-			console.log('Card', cid, 'initialize');
-			containers.self = $('#'+id);
-			containers.flipper = containers.self.find('.flipper');
-			containers.input = containers.self.find('.input');
-			containers.inputMessage = containers.input.find('.message');
-			containers.output = containers.self.find('.output');
-			containers.outputResponse = containers.output.find('code');
-			containers.outputTabulate = containers.output.find('.tabulate');
-			containers.outputStatus = containers.output.find('.status');
-			containers.submit = containers.self.find('button[type=submit]');
+        controls.resetAtDefaultState = function(e) {
+            containers.outputResponse.html('');
+            containers.outputTabulate.html('');
+            containers.output.addClass('hide');
+            containers.fmtRaw.trigger('click');
+        }
+        controls.showAbout = function(e) {
+            containers.appAbout.removeClass('hide');
+        }
+        controls.hideAbout = function(e) {
+            containers.appAbout.addClass('hide');
+        }
 
-			containers.flipper.on('click', controls.flipper);
-			containers.submit.on('click', controls.submit);			
-		}
-	}
+        this.destroy = function() {
+            console.log('Card', cid, 'destroy');
+            containers.fileRef.off('change', controls.handleFileSelect);
+            containers.fmtRaw.off('click', controls.handleOutputFormat);
+            containers.fmtTable.off('click', controls.handleOutputFormat);
+        }
+        this.initialize = function() {
+            console.log('Card initialized');
+            containers.appLogo = $('.app-logo');
 
-	var cardCheckPassedArguments = new Card();
-	cardCheckPassedArguments.setWebserviceUrl('/data/');
-	cardCheckPassedArguments.initialize('CheckPassedArguments');
+            containers.appAbout = $('#appAbout');
+            containers.appAboutClose = containers.appAbout.find('.modal-btn-close');
 
+            containers.output = $('.output');
+            containers.outputResponse = containers.output.find('code');
+            containers.outputTabulate = containers.output.find('.tabulate');
+
+            containers.ctrlPanel = $('form#ctrlPanel');
+            containers.filterStr = $('input#filterStr');
+            containers.fmtRaw = $('input#fmtRaw');
+            containers.fmtTable = $('input#fmtTable');
+            containers.fileRef = $('input#fileRef');
+
+            containers.fileRef.on('change', controls.handleFileSelect);
+            containers.fmtRaw.on('click', controls.handleOutputFormat);
+            containers.fmtTable.on('click', controls.handleOutputFormat);
+            containers.ctrlPanel.on('reset', controls.resetAtDefaultState);
+
+            containers.appLogo.on('click', controls.showAbout);
+            containers.appAboutClose.on('click', controls.hideAbout);
+        }
+    }
+
+    var app = new Card();
+    app.initialize();
 };
 
 $(nistush);
