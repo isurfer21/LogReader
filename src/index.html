@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="LogViewer is web-based log file viewer">
+	<meta name="author" content="Abhishek Kumar (kumarab@hcl.com)">
+	<meta name="copyright" content="Abhishek Kumar (c) 2017">
+	<meta name="license" content="MIT">
+	<title>LogViewer</title>
+	<link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+	<link rel="icon" href="img/favicon.ico" type="image/x-icon">
+	<link rel="stylesheet" href="css/normalize.css">
+	<link rel="stylesheet" href="css/milligram.css">
+	<link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+	<div class="container">
+		<h1 class="ws-page-title"><img src="img/logo.png">LogViewer</h1>	
+		<div class="row">
+			<div class="column">
+				<fieldset id="CheckPassedArguments" class="mdl-card mdl-shadow--2dp">
+					<a class="flipper">&#x27c1;</a>
+					<h4 class="ws-title">File to load</h4>
+					<form class="input">
+						<blockquote class="message hide"></blockquote>
+						<label>Filename</label> 
+						<input type="text" name="filename" value="Telepo_00001.log">
+						<label>Filter line with </label> 
+						<input type="text" name="filterlinewith" value="PremiumAttendant">
+						<label>Output as </label> 
+						<input type="radio" name="outputas" value="raw" checked> Raw 
+						<span class="hspacer"></span>
+						<input type="radio" name="outputas" value="tabulated"> Tabulated
+						<span class="vspacer"></span>
+						<button type="submit">Load</button>
+					</form>
+					<div class="output hide">
+						<blockquote>
+							<b>Status:</b> 
+							<span class="status">n/a</span>
+						</blockquote>
+						<pre><code></code></pre>
+						<div class="tabulate"></div>
+					</div>
+				</fieldset>
+			</div>
+		</div>
+	</div>
+	<script src="js/jquery-3.2.1.js"></script>
+	<script src="js/main.js"></script>
+</body>
+</html>
