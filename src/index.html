@@ -6,7 +6,7 @@
 	<meta name="author" content="Abhishek Kumar (kumarab@hcl.com)">
 	<meta name="copyright" content="Abhishek Kumar (c) 2017">
 	<meta name="license" content="MIT">
-	<title>LogViewer</title>
+	<title>LogReader</title>
 	<link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
 	<link rel="icon" href="img/favicon.ico" type="image/x-icon">
 	<link rel="stylesheet" href="css/normalize.css">
@@ -15,7 +15,7 @@
 </head>
 <body>
 	<div class="container">
-		<h1 class="ws-page-title"><img src="img/logo.png">LogViewer</h1>	
+		<img class="ws-page-title-logo" src="img/logo.png">
 		<div class="row">
 			<div class="column">
 				<fieldset id="CheckPassedArguments" class="mdl-card mdl-shadow--2dp">
@@ -23,8 +23,8 @@
 					<h4 class="ws-title">File to load</h4>
 					<form class="input">
 						<blockquote class="message hide"></blockquote>
-						<label>Filename</label> 
-						<input type="text" name="filename" value="Telepo_00001.log">
+						<label>Select a file</label> 
+						<input type="file" name="files[]" />
 						<label>Filter line with </label> 
 						<input type="text" name="filterlinewith" value="PremiumAttendant">
 						<label>Output as </label> 

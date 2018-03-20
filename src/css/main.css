@@ -44,8 +44,9 @@
 	padding-top: 3rem;
 }
 
-.container .ws-page-title > img {
-	width: 56px;
+.container .ws-page-title-logo {
+	width: 86px;
+    margin-top: 10px;
 }
 
 .mdl-card .flipper {
