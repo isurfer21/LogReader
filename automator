@@ -1,0 +1,124 @@
+#!/usr/bin/bash
+ROOT_DIR="$PWD"
+APP_VER="1.0.0"
+
+confirm () {
+    while true; do
+        read -p "$1 " yn
+        case ${yn:-$2} in
+            [Yy]* ) return 0;;
+            [Nn]* ) return 1;;
+            * ) echo "Please answer yes or no.";;
+        esac
+    done
+}
+
+delete () {
+    if [[ "$OSTYPE" == "darwin"* ]]; then # Mac OSX
+        find . -type f -name "$1" -exec rm -f {} \;
+    elif [[ "$OSTYPE" == "msys"* ]]; then # Windows
+        discover . -type f -name "$1" -exec rm -f {} \;
+    else
+        del . /q $1
+    fi
+}
+
+replace () {
+    perl -pi -w -e "s/$1/$2/g;" "$3"
+}
+
+uncomment () {
+    replace "([\<(\!)\-{2}]+)(\}|$1|\{)([\-{2}\>]+)" "\ " "$2"
+}
+
+comment () {
+    replace "\<\!\-\-$1\{\-\-\>" "<\!\-\-$1\{" "$2"
+    replace "\}$1\-\-\>" "}$1\-\-\>" "$2"
+}
+
+SRC_DIR="$ROOT_DIR/src"
+BIN_DIR="$ROOT_DIR/bin"
+
+[ -d $BIN_DIR ] || mkdir $BIN_DIR
+
+if [[ "$1" == "" ]]; then 
+    echo " Command missing! \n"
+  else 
+    cd $ROOT_DIR
+	case "$1" in
+    '-clean')
+        echo " Cleaning unnecessary files from production build"
+        cd $BIN_DIR
+        find . -name '.DS_Store' -type f -delete
+        cd ..
+        echo " Done! \n"
+    ;;
+    '-server')
+        echo " Run server on production build"
+        cd $BIN_DIR
+        php -S 0.0.0.0:8000
+        echo " Started ... \n"
+    ;;
+    '-devserver')
+        echo " Run server on development build"
+        cd $SRC_DIR
+        php -S 0.0.0.0:8000
+        echo " Started ... \n"
+    ;;
+    '-genico')
+        echo " Genrating favicon from master icon"
+		cd src/img
+		convert icon.png -resize 16x16 favicon.ico
+
+		echo " Generating various size icons"
+		convert icon.png -resize 128x128 icon128.png
+		convert icon.png -resize 16x16 icon16.png
+
+		echo " Moving generated various size icons to sub folder"
+		mkdir icons
+		mv icon128.png icons/icon128.png
+		mv icon16.png icons/icon16.png
+		cd ../..
+
+		echo " Done! \n"
+    ;;
+    '-renext')
+        echo " Rename chrome extension & key files \n"
+        if [[ -f "bin/LogReader.crx" ]]; then 
+            rm -i bin/LogReader.crx
+        else 
+            echo " The 'bin/LogReader.crx' file is not available"
+        fi
+        if [[ -f "src.crx" ]]; then 
+            mv src.crx bin/LogReader.crx
+        else 
+            echo " The 'src.crx' file is not available"
+        fi
+        if [[ -f "src.pem" ]]; then 
+            mv src.pem LogReader.pem
+        else 
+            if [[ -f "LogReader.pem" ]]; then 
+                echo " The 'LogReader.pem' file is already available"
+            else 
+                echo " The 'src.pem' file is not available"
+            fi
+        fi
+        echo " Done! \n"
+    ;;
+    '-version')
+        echo " Version $APP_VER \n"
+    ;;
+    '-help')
+        echo "\n Automator   version $APP_VER \n Copyright (c) 2017 Abhishek Kumar, Nistush Tech Solutions. All rights reserved."
+        echo "\n Options:\n"
+        echo "  -version       to see the current version of the app"
+        echo "  -clean         to clean unnecessary files from production build"
+        echo "  -server        to run php server on production build"
+        echo "  -devserver     to run php server on development build"
+        echo "  -genico        to generate application icons in varied sizes & formats"
+        echo "  -help          to see the menu of command line options"
+        echo "\n Please choose accordingly. \n"
+    ;;
+    esac
+fi
+exit 0

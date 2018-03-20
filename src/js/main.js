@@ -109,6 +109,8 @@ var nistush = function(e) {
 
             containers.appLogo.on('click', controls.showAbout);
             containers.appAboutClose.on('click', controls.hideAbout);
+
+            containers.ctrlPanel.trigger('click');
         }
     }
 
