@@ -126,6 +126,26 @@ html, body {
 	-webkit-user-select: text;
 }
 
+.output .raw {
+	font-size: 14px;
+	overflow-y: unset;
+}
+
+.output pre.raw,
+.output pre.raw code {
+	background: transparent;
+}
+
+.output .parsed {
+	font-size: 12px;
+}
+
+.output .parsed table {
+    border-left: 0.3rem solid palevioletred;
+    padding-left: 10px;
+    padding-right: 15px;
+}
+
 /* The Modal (background) */
 .modal-box {
 	z-index: 1;
