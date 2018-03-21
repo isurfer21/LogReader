@@ -116,6 +116,7 @@ if [[ "$1" == "" ]]; then
         echo "  -server        to run php server on production build"
         echo "  -devserver     to run php server on development build"
         echo "  -genico        to generate application icons in varied sizes & formats"
+        echo "  -renext        to rename chrome extension & key files"
         echo "  -help          to see the menu of command line options"
         echo "\n Please choose accordingly. \n"
     ;;

@@ -9,7 +9,7 @@ var nistush = function(e) {
     var Card = function() {
         var containers = {},
             controls = {};
-        var getTabulatedData = function(data) {
+        var getParsedData = function(data) {
             var ilines = data.split('\n'),
                 olines = [];
             for (let i = 0; i < ilines.length; i++) {
@@ -45,8 +45,8 @@ var nistush = function(e) {
                     fileReader.onload = function(e) {
                         let filteredData = getFilteredData(containers.filterStr.val(), fileReader.result);
                         containers.outputResponse.html(filteredData);
-                        let tabulatedData = getTabulatedData(filteredData);
-                        containers.outputTabulate.html(tabulatedData);
+                        let parsedData = getParsedData(filteredData);
+                        containers.outputParsed.html(parsedData);
                     }
                     fileReader.readAsText(fileTobeRead);
                     containers.output.removeClass('hide');
@@ -59,16 +59,16 @@ var nistush = function(e) {
             console.log('controls.handleOutputFormat', e);
             let outputFmt = e.target.value;
             if (outputFmt == "raw") {
-                containers.outputResponse.removeClass('hide');
-                containers.outputTabulate.addClass('hide');
+                containers.outputRaw.removeClass('hide');
+                containers.outputParsed.addClass('hide');
             } else {
-                containers.outputResponse.addClass('hide');
-                containers.outputTabulate.removeClass('hide');
+                containers.outputRaw.addClass('hide');
+                containers.outputParsed.removeClass('hide');
             }
         }
         controls.resetAtDefaultState = function(e) {
             containers.outputResponse.html('');
-            containers.outputTabulate.html('');
+            containers.outputParsed.html('');
             containers.output.addClass('hide');
             containers.fmtRaw.trigger('click');
         }
@@ -83,7 +83,7 @@ var nistush = function(e) {
             console.log('Card', cid, 'destroy');
             containers.fileRef.off('change', controls.handleFileSelect);
             containers.fmtRaw.off('click', controls.handleOutputFormat);
-            containers.fmtTable.off('click', controls.handleOutputFormat);
+            containers.fmtParsed.off('click', controls.handleOutputFormat);
         }
         this.initialize = function() {
             console.log('Card initialized');
@@ -93,18 +93,19 @@ var nistush = function(e) {
             containers.appAboutClose = containers.appAbout.find('.modal-btn-close');
 
             containers.output = $('.output');
+            containers.outputRaw = containers.output.find('pre');
             containers.outputResponse = containers.output.find('code');
-            containers.outputTabulate = containers.output.find('.tabulate');
+            containers.outputParsed = containers.output.find('.parsed');
 
             containers.ctrlPanel = $('form#ctrlPanel');
             containers.filterStr = $('input#filterStr');
             containers.fmtRaw = $('input#fmtRaw');
-            containers.fmtTable = $('input#fmtTable');
+            containers.fmtParsed = $('input#fmtParsed');
             containers.fileRef = $('input#fileRef');
 
             containers.fileRef.on('change', controls.handleFileSelect);
             containers.fmtRaw.on('click', controls.handleOutputFormat);
-            containers.fmtTable.on('click', controls.handleOutputFormat);
+            containers.fmtParsed.on('click', controls.handleOutputFormat);
             containers.ctrlPanel.on('reset', controls.resetAtDefaultState);
 
             containers.appLogo.on('click', controls.showAbout);

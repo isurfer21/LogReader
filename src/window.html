@@ -26,11 +26,16 @@
                     <input type="text" name="filterStr" id="filterStr" placeholder="Filter" value="PremiumAttendant">
                 </div>
                 <div class="column app-ctrl">
-                    <input type="radio" name="outputFmt" id="fmtRaw" value="raw" checked> Raw
-                    <span class="hspacer"></span>
-                    <input type="radio" name="outputFmt" id="fmtTable" value="tabulated"> Tabulated
+                    <div class="row vg-rv">
+                        <div class="column app-ctrl">
+                            <input type="radio" name="outputFmt" id="fmtParsed" value="parsed"> Parsed
+                        </div>
+                        <div class="column app-ctrl">
+                            <input type="radio" name="outputFmt" id="fmtRaw" value="raw" checked> Raw
+                        </div>
+                    </div>
                 </div>
-                <div class="column app-ctrl">
+                <div class="column app-ctrl vg-fs">
                     <input type="file" name="fileRef" id="fileRef" />
                 </div>
                 <div class="column app-ctrl">
@@ -41,7 +46,7 @@
     </div>
     <div class="output hide">
         <pre class="raw"><code></code></pre>
-        <div class="tabulate hide"></div>
+        <div class="parsed hide"></div>
     </div>
     <div id="appAbout" class="modal-box hide">
         <div class="modal-box-content">
